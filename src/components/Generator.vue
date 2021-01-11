@@ -23,7 +23,7 @@
     </section>
 
     <div class="container">
-      <div class="column is multiline mt-3">
+      <div class="columns is-multiline mt-3">
         <div v-for="app in filteredAppList"
              :key="app.id"
              class="column is-one-third">
@@ -41,6 +41,10 @@
                     :key="skill.id">
                   <li>
                     <strong>{{ skillList[skill-1].skill }}</strong>
+                    <p v-if="skillList[skill-1].options"
+                       :set="randomSkill = getRandom(skillList[skill-1].options)">
+                      🦮 <a :href="randomSkill">{{ randomSkill }}</a>
+                    </p>
                   </li>
                 </ul>
               </div>
@@ -81,6 +85,11 @@ export default {
       return selectedSkills.every((f) => appSkills.includes(f));
     }
 
+    function getRandom(value) {
+      let keys = Object.keys(value);
+      return value[keys[(keys.length * Math.random()) << 0]];
+    }
+
     async function getSkillList() {
       const response = await fetch(`${GENERATOR_BASE}/skills`);
       skillList.value = await response.json();
@@ -100,6 +109,7 @@ export default {
       selectedSkills,
       filteredAppList,
       generateFilteredAppList,
+      getRandom,
     };
   },
 };
@@ -111,5 +121,8 @@ export default {
   }
   .card {
     height: 100%;
+  }
+  a {
+    word-break: break-word;
   }
 </style>
